@@ -1,11 +1,12 @@
 class Story {
     HashMap<String, Dialogo> dialogos;
     String current;
-    UI ui;
+    int width;
+    int height;
 
-    Story(int width, int height) {
-        this.width = width;
-        this.height = height;
+    Story(int widthPantalla, int heightPantalla) {
+        this.width = widthPantalla;
+        this.height = heightPantalla;
         dialogos = new HashMap<String, Dialogo>();
     }
 
@@ -15,11 +16,7 @@ class Story {
         ui.renderText();
     }
 
-    void loadOptionA() {
-        Dialogo d = dialogos.get(dialogos.get(current).optionA);
-        dialogos.put(d.name, d);
-        current = d.name;
-    }
+
     void loadDefault() {
         dialogos.put("inicio", inicio());
         dialogos.put("jugar", jugar());
@@ -29,14 +26,16 @@ class Story {
 
     void loadOptionA() {
         Dialogo d = dialogos.get(dialogos.get(current).optionA);
-        dialogos.put(d.name, d);
         current = d.name;
     }
 
     void loadOptionB() {
         Dialogo d = dialogos.get(dialogos.get(current).optionB);
-        dialogos.put(d.name, d);
         current = d.name;
+    }
+
+    Dialogo getCurrentDialogo() {
+        return dialogos.get(current);
     }
 }
 
