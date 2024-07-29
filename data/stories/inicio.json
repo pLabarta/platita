@@ -1,0 +1,8 @@
+{
+  "ingresos": 1000,
+  "texto": "Bienvenidx a Platita interactiva\nPresiona W para escribir o A para leer una historia",
+  "gender": "M",
+  "imgPath": "img/platita.jpeg",
+  "nombre": "Platita",
+  "edad": 25
+}

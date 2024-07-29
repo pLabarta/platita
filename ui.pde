@@ -11,11 +11,14 @@ class UI {
     PGraphics filteredBackground;
     PImage image;
 
-    String currentText;
     int textPxSize;
     int margin;
     color textColor;
     color bgColor;
+
+    int scrollLinePosition = 0;
+    int lastScrollTime = 0;
+    int scrollInterval = 1600; // Time in milliseconds between scrolls
 
     UI(int width, int height) {
         this.width = width;
@@ -23,11 +26,10 @@ class UI {
         this.text = "";
         this.margin = 10;
         this.textPxSize = 32;
-        this.currentText = "";
         this.textColor = color(0);
-        this.bgColor = color(255);
+        this.bgColor = color(255,100);
 
-        this.image = loadImage("img/zebra.jpg");
+        this.image = loadImage("img/platita.jpeg");
 
         this.shader = loadShader("dithering.glsl");
         this.rawBackground = createGraphics(width, height, P2D);
@@ -50,6 +52,12 @@ class UI {
 
     void setImage(String imgPath) {
         this.image = loadImage(imgPath);
+        this.shader.set("backgroundTexture", image);
+    }
+
+    void setLiveImage(Capture cam) {
+        this.image = cam;
+        this.shader.set("backgroundTexture", image);
     }
 
     void setBackgroundColor(color c) {
@@ -59,16 +67,56 @@ class UI {
     // Function that renders the text one character at a time with a delay until it reaches the end and shows the full text
     void renderText() {
         fill(bgColor);
-        noStroke();
+        strokeWeight(4);
+        stroke(textColor);
         rectMode(CORNER);
         rect(margin, height/4*3, width - margin * 2, height/4-margin);
         textSize(textPxSize);
         fill(textColor);
-        text(currentText, margin*2, height/4*3+textPxSize+margin);
-        if (currentText.length() < text.length()) {
-                currentText = text.substring(0, currentText.length() + 1);
+        text(text, margin*2, height/4*3+textPxSize+margin);
+    }
+
+    void renderFullText(String texto) {
+        fill(bgColor);
+        strokeWeight(4);
+        stroke(textColor);
+        rectMode(CORNER);
+        rect(margin, margin, width - margin * 2, height-margin*2);
+        textSize(textPxSize);
+        fill(textColor);
+        text(texto, margin*2, textPxSize+margin);
+    }
+
+    void renderHistoria(Historia historia) {
+    fill(bgColor);
+        strokeWeight(4);
+        stroke(textColor);
+        rectMode(CORNER);
+        rect(margin, height/4*3, width - margin * 2, height/4-margin);
+        textSize(textPxSize);
+        fill(textColor);
+
+    String texto = historia.texto; // Assuming Historia has a getText() method
+    String[] lines = split(texto, '\n'); // Split the text into lines
+    int maxLines = 4; // Maximum number of lines to display at once
+
+    // Check if it's time to scroll
+    if (millis() - lastScrollTime > scrollInterval) {
+        scrollLinePosition++;
+        if (scrollLinePosition > lines.length - maxLines) {
+            scrollLinePosition = 0; // Reset to the beginning
+        }
+        lastScrollTime = millis();
+    }
+
+    // Display the subset of lines
+    for (int i = 0; i < maxLines; i++) {
+        int lineIndex = scrollLinePosition + i;
+        if (lineIndex < lines.length) {
+            text(lines[lineIndex], margin * 2, height/4*3 + textPxSize  + i * textPxSize);
         }
     }
+}
 }
 
 // Function that convers a color into an array of 3 floats from 0.0 to 1.0 for using in the shader colors

@@ -26,6 +26,8 @@ class Story {
 
     void loadOptionA() {
         Dialogo d = dialogos.get(dialogos.get(current).optionA);
+        // Print the current dialogo name
+        println(d.name); 
         current = d.name;
     }
 
@@ -71,7 +73,7 @@ class Dialogo {
 Dialogo inicio() {
     Dialogo d = new Dialogo();
     d.name = "inicio";
-    d.texto = "Bienvenidx a Platita Interactiva";
+    d.texto = "Bienvenidx a Platita Interactiva \n Presiona A para leer una historia o D para escribir una";
     d.imgPath = "img/inicio.png";
     d.soundPath = "sound/inicio.mp3";
 
